@@ -19,13 +19,17 @@ var ffmpeg = require('fluent-ffmpeg');
 
 //app.use(express.static(__dirname + '/flowplayer'));
 
+/**
+ * Conversion d'un fichier au format flv recu en GET
+ */
 router.get('/video/:filename', function(req, res) {
     res.contentType('flv');
     // make sure you set the correct path to your video file storage
-    var pathToMovie = __dirname + '/storage/video-input/' + req.params.filename;
-    var proc = ffmpeg(pathToMovie)
+    var pathToMovieInput = __dirname + '/storage/video-input/' + req.params.filename;
+    var pathToMovieOutput = __dirname + '/storage/video-output/' + req.params.filename;
+    var proc = ffmpeg(pathToMovieInput)
     // use the 'flashvideo' preset (located in /lib/presets/flashvideo.js)
-        .preset('flashvideo')
+        .preset('divx')
         // setup event handlers
         .on('end', function() {
             console.log('file has been converted succesfully');
@@ -34,7 +38,11 @@ router.get('/video/:filename', function(req, res) {
             console.log('an error happened: ' + err.message);
         })
         // save to stream
-        .pipe(res, {end:true});
+        //.pipe(res, {end:true});
+        // save to local
+        .save(pathToMovieOutput);
+    // redirection vers la page d'accueil avec travail en arriere plan
+    res.redirect('/');
 });
 
 module.exports = router;
