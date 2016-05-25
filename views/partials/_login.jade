@@ -1,0 +1,43 @@
+//
+   Created by maximesenecal on 24/05/2016.
+
+#create-row.row
+    #create-list-login-container.row.create-list-button
+        .col.s12.m6.l6
+            .create-list-login-panel.center.create-list-connect-btn
+                p.flow-text Connectez-vous simplement grâce aux réseaux sociaux
+                div
+                    a.connect-btn.button-google.btn.create-list-button(href='#')
+                        | Google
+                div
+                    a.connect-btn.button-windows.btn.create-list-button(href='#')
+                        | Twitter
+                div
+                    a.connect-btn.button-facebook.btn.create-list-button(href='#')
+                        | Facebook
+                div
+                    | Vous avez une adresse mail?
+                    a.modal-trigger(href='#')  Connectez-vous.
+        .col.s12.m6.l6.create-list-login-right
+            .create-list-login-panel.center
+                div
+                    input.new-list-name-hidden(type='hidden', name='new-list-name')
+                    .center
+                        p.flow-text Créez un nouveau compte avec votre adresse mail
+                    .row
+                        .col.s12.input-field
+                            input#new-your-name(name='new-your-name', type='text')
+                            label(for='new-your-name') Votre nom
+                    .row
+                        .col.s12.input-field
+                            input#new-your-email(name='new-your-email', type='email')
+                            label(for='new-your-email') Votre adresse mail
+                    .row
+                        .col.s12.input-field
+                            input#new-your-password(name='new-your-password', type='password')
+                            label(for='new-your-password') Choisissez un mot de passe
+                    .row.center
+                        button#create-account-and-list.btn Créer un compte
+                        p#create-account-and-list-message.materialize-red-text.lighten-2
+    .row.center
+        a(href='/terms') Conditions d'utilisation
