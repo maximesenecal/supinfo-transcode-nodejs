@@ -5,9 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-// Utilisation du package de connexion à une base de donnée MongoDB
-var db = require('./db');
-
 var routes = require('./routes/index');
 var user = require('./routes/user');
 var transcoding = require('./routes/transcoding_ffmpeg');
