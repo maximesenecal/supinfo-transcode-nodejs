@@ -5,11 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-// Utilisation du package de connexion à une base de donnée MongoDB
-var db = require('./db');
-
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var user = require('./routes/user');
 var transcoding = require('./routes/transcoding_ffmpeg');
 var encoding = require('./routes/encoding_choice');
 
@@ -25,7 +22,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 
@@ -35,7 +32,7 @@ app.use('/static', express.static( __dirname + '/public' ) );
  * Gestion des routes
  */
 app.use('/', routes);
-app.use('/user', users);
+app.use('/user', user);
 app.use('/transcoding', transcoding);
 app.use('/encodingchoice', encoding);
 
