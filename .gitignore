@@ -38,7 +38,9 @@ Thumbs.db
 
 # Custom #
 ######################
-/node_modules
-/routes/storage/video-input
-/routes/storage/video-output
+/node_modules/*
+!/node_modules/fluent-ffmpeg/lib/presets/
 
+/storage/input
+/storage/output
+/storage/temp
