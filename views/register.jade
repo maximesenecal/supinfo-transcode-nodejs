@@ -1,0 +1,29 @@
+//
+   Created by maximesenecal on 27/05/2016.
+
+extends layout
+
+block content
+    br
+    br
+    .row.container
+        form.col.s12
+            .row
+                .input-field.col.s6
+                    input#first_name.validate(placeholder='Maxime', type='text')
+                    label(for='first_name') Prénom
+                .input-field.col.s6
+                    input#last_name.validate(type='text')
+                    label(for='last_name') Nom
+            .row
+                .input-field.col.s12
+                    input#disabled.validate(placeholder='Exemple : maxime073', type='text')
+                    label(for='disabled') Username
+            .row
+                .input-field.col.s12
+                    input#password.validate(type='password')
+                    label(for='password') Nouveau mot de passe
+            .row
+                .input-field.col.s12
+                    input#email.validate(type='email')
+                    label(for='email') E-mail

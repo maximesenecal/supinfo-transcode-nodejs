@@ -8,6 +8,11 @@ var router = express.Router();
 // Model User
 var User = require('../models/user.js');
 
+// Inscription d'un nouvel utilisateur
+router.get('/register', function(req, res) {
+  res.render('register');
+});
+
 /*
  * Route authenticate a user
  */
