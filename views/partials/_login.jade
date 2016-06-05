@@ -15,29 +15,25 @@
                 div
                     a.connect-btn.button-facebook.btn.create-list-button(href='#')
                         | Facebook
-                div
-                    | Vous avez une adresse mail?
-                    a.modal-trigger(href='#')  Connectez-vous.
         .col.s12.m6.l6.create-list-login-right
             .create-list-login-panel.center
                 div
                     input.new-list-name-hidden(type='hidden', name='new-list-name')
                     .center
-                        p.flow-text Créez un nouveau compte avec votre adresse mail
+                        p.flow-text Connectez vous avec votre adresse mail
                     .row
                         .col.s12.input-field
-                            input#new-your-name(name='new-your-name', placeholder='Exemple : maxime974', type='text')
-                            label(for='new-your-name') Nom d'utilisateur
+                            input#email(name='email', type='email')
+                            label(for='email') Votre adresse mail
                     .row
                         .col.s12.input-field
-                            input#new-your-email(name='new-your-email', type='email')
-                            label(for='new-your-email') Votre adresse mail
-                    .row
-                        .col.s12.input-field
-                            input#new-your-password(name='new-your-password', type='password')
-                            label(for='new-your-password') Choisissez un mot de passe
+                            input#password(name='password', type='password')
+                            label(for='password') Choisissez un mot de passe
                     .row.center
-                        button#create-account-and-list.btn Créer un compte
+                        button#create-account-and-list.btn Connexion
                         p#create-account-and-list-message.materialize-red-text.lighten-2
+                div
+                    | Vous n'avez pas de compte ?
+                    a.modal-trigger(href='')  Créer un compte.
     .row.center
         a(href='/terms') Conditions d'utilisation

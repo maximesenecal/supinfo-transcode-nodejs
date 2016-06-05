@@ -2,8 +2,14 @@
  * Created by maximesenecal on 20/05/2016.
  */
 
-var express = require('express');
-var router = express.Router();
+var express = require('express'),
+    isAuth = require('../middlewares/auth.js'),
+    router = express.Router();
+
+/*
+ * Middleware pour vérifier le token
+ */
+router.use(isAuth);
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

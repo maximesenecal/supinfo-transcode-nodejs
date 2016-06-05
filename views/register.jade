@@ -5,25 +5,29 @@ extends layout
 
 block content
     br
-    br
     .row.container
-        form.col.s12
+        form(action="/user/add", method="post").col.s12
             .row
                 .input-field.col.s6
-                    input#first_name.validate(placeholder='Maxime', type='text')
+                    input#first_name.validate(placeholder='Maxime', type='text', name="first_name")
                     label(for='first_name') Prénom
                 .input-field.col.s6
-                    input#last_name.validate(type='text')
+                    input#last_name.validate(placeholder='Sénécal', type='text', name="last_name")
                     label(for='last_name') Nom
             .row
                 .input-field.col.s12
-                    input#disabled.validate(placeholder='Exemple : maxime073', type='text')
-                    label(for='disabled') Username
+                    input#username.validate(placeholder='Ex : maxime062', type='text', name="username")
+                    label(for='username') username
             .row
                 .input-field.col.s12
-                    input#password.validate(type='password')
-                    label(for='password') Nouveau mot de passe
+                    input#password.validate(type='password', name="password")
+                    label(for='password') Mot de passe
             .row
                 .input-field.col.s12
-                    input#email.validate(type='email')
-                    label(for='email') E-mail
+                    input#email.validate(type='email', name="email")
+                    label(for='email') Email
+            .row
+                .col.s12
+                    button.btn.waves-effect.waves-light(type='submit', name='action')
+                        | Créer un compte
+                        i.material-icons.right send

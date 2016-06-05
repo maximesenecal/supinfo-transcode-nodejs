@@ -1,6 +1,7 @@
 var express = require('express'),
     crypto = require('crypto'),
     jwt = require('jsonwebtoken'),
+    isAuth = require('../middlewares/auth.js'),
     config = require('../config');
 
 var router = express.Router();
@@ -9,8 +10,55 @@ var router = express.Router();
 var User = require('../models/user.js');
 
 // Inscription d'un nouvel utilisateur
+
 router.get('/register', function(req, res) {
   res.render('register');
+});
+
+router.get('/connect', function(req, res) {
+  res.render('connect');
+});
+
+/* Add a new user */
+router.get('/addsample', function(req, res) {
+
+  // Create a sample user
+  var user = new User({
+    name: 'Justin Baroux',
+    username: 'justinbaroux',
+    password: hash('Supinf0'),
+    admin: true
+  });
+
+  // Save in MongoDB
+  user.save(function(err) {
+    if (err) throw err;
+
+    console.log('Utilisateur ' + user.name + ' a été créé avec succès');
+    // TODO : Penser à faire la redirection après ajout
+    res.json({ success: true });
+  });
+});
+
+router.post('/add', function(req, res) {
+  console.log(req.body);
+
+  var user = new User({
+    name: req.body.last_name,
+    username: req.body.username,
+    email: req.body.email,
+    password: hash(req.body.password),
+    admin: false
+  });
+
+  // Save in MongoDB
+  user.save(function(err) {
+    if (err) throw err;
+
+    console.log('Utilisateur ' + user.name + ' a été créé avec succès');
+    // TODO : Penser à faire la redirection après ajout
+    res.json({ success: true });
+  });
 });
 
 /*
@@ -56,36 +104,7 @@ router.post('/auth', function(req, res) {
 /*
  * Middleware pour vérifier le token
  */
-router.use(function(req, res, next) {
-
-  // check header or url parameters or post parameters for token
-  var token = req.body.token || req.query.token || req.headers['x-access-token'];
-
-  // decode token
-  if (token) {
-
-    // verifies secret and checks exp
-    jwt.verify(token, config.secret, function(err, decoded) {
-      if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;
-        next();
-      }
-    });
-
-  } else {
-
-    // if there is no token
-    // return an error
-    return res.status(403).send({
-      success: false,
-      message: 'No token provided.'
-    });
-
-  }
-});
+router.use(isAuth);
 
 /*
  * Utilisation de crypto pour hash le pass
@@ -102,26 +121,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/profile', function(req, res, next) {
   res.send('User profile');
-});
-
-/* Add a new user */
-router.get('/add', function(req, res) {
-
-  // Create a sample user
-  var user = new User({
-    name: 'Justin Baroux',
-    username: 'justinbaroux',
-    password: hash('Supinf0'),
-    admin: true
-  });
-
-  // Save in MongoDB
-  user.save(function(err) {
-    if (err) throw err;
-
-    console.log('Utilisateur ' + user.name + ' a été créé avec succès');
-    res.json({ success: true });
-  });
 });
 
 /* Get all users */
