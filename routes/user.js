@@ -11,9 +11,6 @@ var User = require('../models/user');
 /*
  * Local authentification
  */
-router.get('/', isLoggedIn, function (req, res) {
-  res.send('View user - 10 Go');
-});
 //TODO: Faire le bouton deconnexion sur la vue
 router.get('/login', function (req, res) {
   res.render('login', {message: req.flash('loginMessage')});
@@ -36,20 +33,26 @@ router.post('/signup', passport.authenticate('local-signup', {
   failureFlash: true
 }));
 
-router.get('/profile', isLoggedIn, function (req, res) {
+router.get('/', isLoggedIn, function (req, res) {
   res.render('profile', {
     // get the user in the session
-    user: req.user
+    username: req.user.username,
+    first_name: req.user.first_name,
+    last_name: req.user.last_name,
+    email: req.user.local.email
+  });
+});
+
+router.get('/drive', isLoggedIn, function (req, res) {
+  res.render('drive', {
+    // get the user in the session
+    files: req.user.files
   });
 });
 
 router.get('/logout', function (req, res) {
   req.logout();
   res.redirect('/');
-});
-
-router.get('/drive', function (req, res) {
-  res.render('drive');
 });
 
 router.get('/actual', function (req,res){

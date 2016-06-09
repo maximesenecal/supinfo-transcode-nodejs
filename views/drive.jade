@@ -7,27 +7,28 @@
 extends layout
 
 block content
-    if message
-        | #{message}
+    br
     .container
         .section
             .row
                 table
                     thead
                         tr
-                            th(data-field='id') Nom des fichiers en cours / convertit
+                            th(data-field='id') Nom des fichiers
                             th(data-field='type') Type
-                            th(data-field='audio_codec') Taille du fichier
+                            th(data-field='audio_codec') Taille
                             th(data-field='video_codec') Actions
                     tbody
-                        tr
-                            if media
-                                td #{media.title}
-                                td #{media.type}
-                                td #{media.size}
-                                td #{media.lenght}
-                            else
+                        if files
+                            each file in files
+                                tr
+                                    td #{file.name}
+                                    td #{file.size}
+                                    td #{file.formatOutput}
+                                    td #{file.download}
+                        else
+                            tr
                                 td Ex : game.of.thrones.s06e05.720p.hdtv.x264-avs
                                 td mkv
                                 td 1.10Go
-                                td 58:12
+                                td Conversion en cours

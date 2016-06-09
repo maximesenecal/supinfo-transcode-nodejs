@@ -4,5 +4,30 @@
 extends layout
 
 block content
+    br
     .row.container
-        #{user.local.email}
+        form(action="/user", method="post").col.s12
+            .row
+                .input-field.col.s6
+                    input#first_name.validate(placeholder='#{first_name}', type='text', name="first_name")
+                    label(for='first_name') Prénom
+                .input-field.col.s6
+                    input#last_name.validate(placeholder='#{last_name}', type='text', name="last_name")
+                    label(for='last_name') Nom
+            .row
+                .input-field.col.s12
+                    input#username.validate(placeholder='#{username}', type='text', name="username")
+                    label(for='username') username
+            .row
+                .input-field.col.s12
+                    input#password.validate(type='password', name="password")
+                    label(for='password') Changer mot de passe
+            .row
+                .input-field.col.s12
+                    input#email.validate(placeholder='#{email}', type='email', name="email")
+                    label(for='email') Email
+            .row
+                .col.s12
+                    button.btn.waves-effect.waves-light(type='submit', name='action')
+                        | Mettre à jour
+                        i.material-icons.right send

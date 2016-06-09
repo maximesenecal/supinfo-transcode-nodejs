@@ -15,6 +15,8 @@ mongoose.connect(config.database, function(err) {
 
 var userSchema = mongoose.Schema({
     username: String,
+    first_name: String,
+    last_name: String,
     admin: Boolean,
     local: {
         email: String,
@@ -31,16 +33,16 @@ var userSchema = mongoose.Schema({
         limit: String,
         actual: String,
     },
-    files: {
-        file: {
+    files: [
+        {
             name: String,
             size: Number,
             formatOrigin: String,
             formatOutput: String,
-            time: Number, //TODO: Faire un regex
-            download: Boolean,
-        },
-    }
+            time: Number, //TODO: Faire un regex?
+            download: Boolean
+        }
+    ]
 });
 
 userSchema.methods.generateHash = function(password) {

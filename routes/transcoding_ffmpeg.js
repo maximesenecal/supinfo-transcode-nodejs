@@ -6,7 +6,6 @@ var express = require('express'),
     multer = require('multer'),
     router = express.Router();
 
-//Middleware authentification
 var isLoggedIn = require('../middlewares/auth');
 
 //TODO: Vérifier avec multer le choix des formats de fichiers lors de l'upload
@@ -20,14 +19,6 @@ var storage = multer.diskStorage({
 });
 
 router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), function(req,res){
-    //DEBUGGING
-    console.log(req.body.formatChoice); //form fields
-    console.log(req.file); //form files
-    console.log(req.file.mimetype);
-    //INSERTION BDD
-    
-    
-    //CHOIX CONVERSION
     if(req.file.mimetype == 'video/mp4' || req.file.mimetype == 'video/quicktime' || req.file.mimetype == 'video/avi')
         res.redirect('transcoding/video/' + req.file.originalname +'/'+ req.body.formatChoice);
     else if(req.file.mimetype == 'audio/mp3')
@@ -53,7 +44,7 @@ var ffmpeg = require('fluent-ffmpeg');
 //app.use(express.static(__dirname + '/flowplayer'));
 
 /**
- * Conversion d'un fichier au format flv recu en GET
+ * Conversion d'un fichier video
  */
 router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
     var pathToMovieInput = './uploads/input/' + req.params.filename;
@@ -73,9 +64,6 @@ router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
             console.log('Processing: ' + progress.percent + '% done');
         })
         .save(pathToMovieOutput);
-    /*
-     * Redirection vers la page d'accueil avec travail en arriere plan
-     */
     // TODO : Faire la redirection vers la page /user lorsqu'elle sera créée
     res.render('drive', { message: 'La conversion de votre fichier est en cours' });
 });
@@ -87,7 +75,7 @@ router.get('/audio/:filename', isLoggedIn, function(req, res) {
     var pathToFileInput = './uploads/input/' + req.params.filename;
     var pathToFileOutput = './uploads/output/' + req.params.filename;
     var formatOutput = req.params.format;
-
+    //TODO: Annuler si le format choisit est au format video
     var proc = ffmpeg(pathToFileInput)
         .preset(formatOutput)
         .on('end', function() {
