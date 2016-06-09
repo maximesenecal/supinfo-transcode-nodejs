@@ -7,13 +7,13 @@
             .create-list-login-panel.center.create-list-connect-btn
                 p.flow-text Connectez-vous simplement grâce aux réseaux sociaux
                 div
-                    a.connect-btn.button-google.btn.create-list-button(href='#')
+                    a.connect-btn.button-google.btn.create-list-button.red.darken-1(href='#')
                         | Google
                 div
-                    a.connect-btn.button-windows.btn.create-list-button(href='#')
+                    a.connect-btn.button-windows.btn.create-list-button.blue.darken-1(href='#')
                         | Twitter
                 div
-                    a.connect-btn.button-facebook.btn.create-list-button(href='#')
+                    a.connect-btn.button-facebook.btn.create-list-button.indigo.darken-1(href='/user/auth/facebook')
                         | Facebook
         .col.s12.m6.l6.create-list-login-right
             .create-list-login-panel.center
@@ -21,19 +21,19 @@
                     input.new-list-name-hidden(type='hidden', name='new-list-name')
                     .center
                         p.flow-text Connectez vous avec votre adresse mail
-                    .row
-                        .col.s12.input-field
-                            input#email(name='email', type='email')
-                            label(for='email') Votre adresse mail
-                    .row
-                        .col.s12.input-field
-                            input#password(name='password', type='password')
-                            label(for='password') Choisissez un mot de passe
-                    .row.center
-                        button#create-account-and-list.btn Connexion
-                        p#create-account-and-list-message.materialize-red-text.lighten-2
+                    form(action="/user/login", method="post").col.s12
+                        .row
+                            .col.s12.input-field
+                                input#email(name='email', type='email')
+                                label(for='email') Votre adresse mail
+                        .row
+                            .col.s12.input-field
+                                input#password(name='password', type='password')
+                                label(for='password') Choisissez un mot de passe
+                        .row.center
+                            button(type='submit', name='action').btn Connexion
                 div
                     | Vous n'avez pas de compte ?
-                    a.modal-trigger(href='')  Créer un compte.
+                    a.modal-trigger(href='/user/signup')  Créer un compte.
     .row.center
         a(href='/terms') Conditions d'utilisation

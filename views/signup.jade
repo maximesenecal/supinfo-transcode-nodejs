@@ -6,7 +6,7 @@ extends layout
 block content
     br
     .row.container
-        form(action="/user/add", method="post").col.s12
+        form(action="/user/signup", method="post").col.s12
             .row
                 .input-field.col.s6
                     input#first_name.validate(placeholder='Maxime', type='text', name="first_name")

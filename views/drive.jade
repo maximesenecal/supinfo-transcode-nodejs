@@ -1,0 +1,33 @@
+//
+   Created by maximesenecal on 09/06/2016.
+
+//
+   Created by maximesenecal on 20/05/2016.
+
+extends layout
+
+block content
+    if message
+        | #{message}
+    .container
+        .section
+            .row
+                table
+                    thead
+                        tr
+                            th(data-field='id') Nom des fichiers en cours / convertit
+                            th(data-field='type') Type
+                            th(data-field='audio_codec') Taille du fichier
+                            th(data-field='video_codec') Actions
+                    tbody
+                        tr
+                            if media
+                                td #{media.title}
+                                td #{media.type}
+                                td #{media.size}
+                                td #{media.lenght}
+                            else
+                                td Ex : game.of.thrones.s06e05.720p.hdtv.x264-avs
+                                td mkv
+                                td 1.10Go
+                                td 58:12

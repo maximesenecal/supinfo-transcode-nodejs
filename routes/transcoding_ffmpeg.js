@@ -3,16 +3,43 @@
  */
 
 var express = require('express'),
-    isAuth = require('../middlewares/auth.js'),
+    multer = require('multer'),
     router = express.Router();
 
-/*
- * Middleware pour vérifier le token
- */
-router.use(isAuth);
+//Middleware authentification
+var isLoggedIn = require('../middlewares/auth');
+
+//TODO: Vérifier avec multer le choix des formats de fichiers lors de l'upload
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './uploads/input')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), function(req,res){
+    //DEBUGGING
+    console.log(req.body.formatChoice); //form fields
+    console.log(req.file); //form files
+    console.log(req.file.mimetype);
+    //INSERTION BDD
+    
+    
+    //CHOIX CONVERSION
+    if(req.file.mimetype == 'video/mp4' || req.file.mimetype == 'video/quicktime' || req.file.mimetype == 'video/avi')
+        res.redirect('transcoding/video/' + req.file.originalname +'/'+ req.body.formatChoice);
+    else if(req.file.mimetype == 'audio/mp3')
+        res.redirect('transcoding/audio/' + req.file.originalname +'/'+ req.body.formatChoice);
+    else
+        res.send('Format non pris en charge actuellement');
+});
+
+router.post('/')
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', isLoggedIn, function(req, res, next) {
     res.render('transcoding', { title: 'Express' });
 });
 
@@ -28,17 +55,15 @@ var ffmpeg = require('fluent-ffmpeg');
 /**
  * Conversion d'un fichier au format flv recu en GET
  */
-router.get('/video/:filename', function(req, res) {
-    //res.contentType('flv');
-    // make sure you set the correct path to your video file storage
-    var pathToMovieInput = './storage/input/' + req.params.filename;
-    var pathToMovieOutput = './storage/output/' + req.params.filename;
+router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
+    var pathToMovieInput = './uploads/input/' + req.params.filename;
+    var pathToMovieOutput = './uploads/output/' + req.params.filename;
+    var formatOutput = req.params.format;
+    
     var proc = ffmpeg(pathToMovieInput)
-    // use the 'flashvideo' preset (located in /lib/presets/flashvideo.js)
-        .preset('flashvideo')
-        // setup event handlers
+        .preset(formatOutput)
         .on('end', function() {
-            console.log('file has been converted succesfully');
+            console.log('file has been converted successfully');
         })
         .on('error', function(err) {
             console.log('an error happened: ' + err.message);
@@ -47,25 +72,24 @@ router.get('/video/:filename', function(req, res) {
             // TODO : Penser à utiliser cette progression dans la vue
             console.log('Processing: ' + progress.percent + '% done');
         })
-        // save to stream
-        //.pipe(res, {end:true});
-        // save to local
         .save(pathToMovieOutput);
     /*
      * Redirection vers la page d'accueil avec travail en arriere plan
      */
     // TODO : Faire la redirection vers la page /user lorsqu'elle sera créée
-    res.redirect('/');
+    res.render('drive', { message: 'La conversion de votre fichier est en cours' });
 });
 
 /**
  * Conversion d'un fichier au format audio seulement
  */
-router.get('/audio/:filename', function(req, res) {
-    var pathToFileInput = './storage/input/' + req.params.filename;
-    var pathToFileOutput = './storage/output/' + req.params.filename;
+router.get('/audio/:filename', isLoggedIn, function(req, res) {
+    var pathToFileInput = './uploads/input/' + req.params.filename;
+    var pathToFileOutput = './uploads/output/' + req.params.filename;
+    var formatOutput = req.params.format;
+
     var proc = ffmpeg(pathToFileInput)
-        .preset('mp3')
+        .preset(formatOutput)
         .on('end', function() {
             console.log('file has been converted succesfully into mp3');
         })
@@ -79,7 +103,7 @@ router.get('/audio/:filename', function(req, res) {
     /*
      * TODO: Faire la redirection vers la page /user lorsqu'elle sera créée et envoyer les informations du fichier en cours
      */
-    res.render('transcoding', { message: 'La conversion de votre fichier est en cours' });
+    res.render('drive', { message: 'La conversion de votre fichier est en cours' });
 });
 
 module.exports = router;
