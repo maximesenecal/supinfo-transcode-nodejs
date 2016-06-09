@@ -4,9 +4,6 @@ var express = require('express'),
 var session = require('express-session');
 var passport = require('passport');
 
-var FacebookStrategy = require('passport-facebook').Strategy;
-
-//Middleware authentification
 var isLoggedIn = require('../middlewares/auth');
 
 var User = require('../models/user');
@@ -72,63 +69,15 @@ router.get('/actual', function (req,res){
 /*
  * Facebook authentification
  */
-/*
-passport.initialize();
-passport.use(new FacebookStrategy({
-      clientID: config.facebookAuth.clientID,
-      clientSecret: config.facebookAuth.clientSecret,
-      callbackURL: config.facebookAuth.callbackURL,
-      profileFields: ['emails']
-    },
-    function(accessToken, refreshToken, profile, done) {
+router.get('/login/facebook',
+    passport.authenticate('facebook', { scope : 'email' }
+    ));
 
-      User.findOne({'facebook.id': profile.id}, function (err, user) {
-
-        // if there is an error, stop everything and return that
-        // ie an error connecting to the database
-        if (err)
-          return done(err);
-
-        // if the user is found, then log them in
-        if (user) {
-          // TODO : Faire la redirection si utilisateur trouvé
-          return done(null, user); // user found, return that user
-        } else {
-          var newUser = new User();
-
-          // set all of the facebook infos in our user model
-          newUser.facebook.id = profile.id;
-          newUser.facebook.token = accessToken;
-          newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-          newUser.facebook.email = profile.emails[0].value;
-          
-          // save user in db
-          newUser.save(function (err) {
-            if (err)
-              throw err;
-            // if successful, return the user
-            console.log(newUser);
-            return done(null, newUser);
-          });
-        }
-      });
-    }
-));
-
-router.get('/auth/facebook',
-    passport.authenticate('facebook', { scope: 'email' }));
-
-router.get('/auth/facebook/callback',
+router.get('/login/facebook/callback',
     passport.authenticate('facebook', {
-      failureRedirect: '/connect',
-      successRedirect : '/profile'
-    }),
-    function(req, res) {
-      // Successful authentication, redirect home.
-      res.render('/profile', {
-        user : req.user // get the user out of session and pass to template
-      });
-    });
-*/
+      successRedirect : '/user/drive',
+      failureRedirect : '/user/login'
+    })
+);
 
 module.exports = router;

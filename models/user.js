@@ -22,8 +22,9 @@ var userSchema = mongoose.Schema({
     },
     facebook: {
         id: String,
-        token: String,
-        name: String,
+        access_token: String,
+        firstName: String,
+        lastName: String,
         email: String
     },
     drive: {
