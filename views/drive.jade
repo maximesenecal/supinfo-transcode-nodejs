@@ -14,18 +14,30 @@ block content
                 table
                     thead
                         tr
-                            th(data-field='id') Nom des fichiers
+                            th(data-field='name') Nom des fichiers
+                            th(data-field='size') Taille
                             th(data-field='type') Type
-                            th(data-field='audio_codec') Taille
-                            th(data-field='video_codec') Actions
+                            th.center-align(data-field='actions') Actions
                     tbody
                         if files
                             each file in files
                                 tr
-                                    td #{file.name}
+                                    td #{file.filename}
                                     td #{file.size}
-                                    td #{file.formatOutput}
-                                    td #{file.download}
+                                    td #{file.encoding}
+                                    td.center-align
+                                        if file.download
+                                            a.btn.green.darken-1(href="#{file.path}", download="#{file.filename}")
+                                                | Télécharger
+                                        else
+                                            .preloader-wrapper.small.active
+                                                .spinner-layer.spinner-green-only
+                                                    .circle-clipper.left
+                                                        .circle
+                                                    .gap-patch
+                                                        .circle
+                                                    .circle-clipper.right
+                                                        .circle
                         else
                             tr
                                 td Ex : game.of.thrones.s06e05.720p.hdtv.x264-avs

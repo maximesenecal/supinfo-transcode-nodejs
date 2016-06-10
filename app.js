@@ -37,6 +37,7 @@ app.use(passport.session()); // persistent login sessions
 app.use(flash());
 
 app.use('/static', express.static( __dirname + '/public' ) );
+app.use('/uploads', express.static(__dirname + '/uploads'));
 
 /*
  * Gestion des routes
@@ -48,6 +49,7 @@ var transcoding = require('./routes/transcoding_ffmpeg');
 app.use('/', routes);
 app.use('/user', user);
 app.use('/transcoding', transcoding);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

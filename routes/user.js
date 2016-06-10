@@ -13,7 +13,7 @@ var User = require('../models/user');
  */
 //TODO: Faire le bouton deconnexion sur la vue
 router.get('/login', function (req, res) {
-  res.render('login', {message: req.flash('loginMessage')});
+  res.render('login');
 });
 
 //TODO: Faire les messages flash côté vue
@@ -24,7 +24,7 @@ router.post('/login', passport.authenticate('local-login', {
 }));
 
 router.get('/signup', function (req, res) {
-  res.render('signup', {message: req.flash('signupMessage')});
+  res.render('signup');
 });
 
 router.post('/signup', passport.authenticate('local-signup', {
@@ -34,18 +34,12 @@ router.post('/signup', passport.authenticate('local-signup', {
 }));
 
 router.get('/', isLoggedIn, function (req, res) {
-  res.render('profile', {
-    // get the user in the session
-    username: req.user.username,
-    first_name: req.user.first_name,
-    last_name: req.user.last_name,
-    email: req.user.local.email
-  });
+  res.render('profile', {user: req.user});
 });
 
 router.get('/drive', isLoggedIn, function (req, res) {
   res.render('drive', {
-    // get the user in the session
+    user: req.user,
     files: req.user.files
   });
 });
@@ -56,14 +50,14 @@ router.get('/logout', function (req, res) {
 });
 
 router.get('/actual', function (req,res){
-  var currentIdUser = req.session.passport.user;
+  var currentIdUser = req.user.id;
   User.findOne({ _id: currentIdUser }, function(err, user) {
     if(err)
         console.log(err);
-    console.log(user.local.email);
-    user.files.unshift({name: 'coucou'});
+    var file = req.file;
+    user.files.unshift(file);
     user.save(function(err) {
-      console.log('Erreur de save'+err);
+      console.log('Erreur de sauvegarde dans la base de donnée');
     })
   });
   res.send('coucou');
@@ -78,6 +72,17 @@ router.get('/login/facebook',
 
 router.get('/login/facebook/callback',
     passport.authenticate('facebook', {
+      successRedirect : '/user/drive',
+      failureRedirect : '/user/login'
+    })
+);
+
+router.get('/login/google',
+    passport.authenticate('google', { scope : ['profile', 'email'] }
+    ));
+
+router.get('/login/google/callback',
+    passport.authenticate('google', {
       successRedirect : '/user/drive',
       failureRedirect : '/user/login'
     })

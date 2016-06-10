@@ -29,17 +29,26 @@ var userSchema = mongoose.Schema({
         lastName: String,
         email: String
     },
+    google: {
+        id: String,
+        access_token: String,
+        firstName: String,
+        lastName: String,
+        email: String
+    },
     drive: {
         limit: String,
         actual: String,
     },
     files: [
         {
-            name: String,
+            originalname: String,
+            encoding: Number,
+            mimetype: String,
+            destination: String,
+            filename: String,
+            path: String,
             size: Number,
-            formatOrigin: String,
-            formatOutput: String,
-            time: Number, //TODO: Faire un regex?
             download: Boolean
         }
     ]

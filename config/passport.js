@@ -4,6 +4,7 @@
 
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 // load up the user model
 var User = require('../models/user');
@@ -85,29 +86,26 @@ module.exports = function(passport) {
 
         // facebook will send back the tokens and profile
         function(access_token, refresh_token, profile, done) {
-            // asynchronous
             process.nextTick(function() {
 
-                // find the user in the database based on their facebook email
-                User.findOne({ 'local.email' : profile.emails[0].value }, function(err, user) {
+                // find the user in the database based on their email or facebook or facebook id
+                User.findOne({ $or: [ {'local.email' : profile.emails[0].value }, {'facebook.id' : profile.id }] }, function(err, user) {
 
-                    // if there is an error, stop everything and return that
-                    // ie an error connecting to the database
                     if (err)
                         return done(err);
                     // if the user is found, then log them in
                     if (user) {
                         return done(null, user); // user found, return that user
                     } else {
-                        // if there is no user found with that facebook id, create them
+                        // if there is no user
                         var newUser = new User();
 
                         // set all of the facebook information in our user model
-                        newUser.facebook.id    = profile.id; // set the users facebook id
-                        newUser.facebook.access_token = access_token; // we will save the token that facebook provides to the user
+                        newUser.facebook.id    = profile.id;
+                        newUser.facebook.access_token = access_token;
                         newUser.facebook.firstName  = profile.name.givenName;
-                        newUser.facebook.lastName = profile.name.familyName; // look at the passport user profile to see how names are returned
-                        newUser.facebook.email = profile.emails[0].value; // facebook can return multiple emails so we'll take the first
+                        newUser.facebook.lastName = profile.name.familyName;
+                        newUser.facebook.email = profile.emails[0].value;
 
                         // save our user to the database
                         newUser.save(function(err) {
@@ -115,6 +113,39 @@ module.exports = function(passport) {
                                 throw err;
 
                             // if successful, return the new user
+                            return done(null, newUser);
+                        });
+                    }
+                });
+            });
+        }));
+
+    passport.use('google', new GoogleStrategy({
+            clientID        : config.googleAuth.clientID,
+            clientSecret    : config.googleAuth.clientSecret,
+            callbackURL     : config.googleAuth.callbackURL
+        },
+
+        function(access_token, refresh_token, profile, done) {
+            process.nextTick(function() {
+                User.findOne({ $or: [ {'local.email' : profile.emails[0].value}, {'google.id' : profile.id } ] }, function(err, user) {
+
+                    if (err)
+                        return done(err);
+                    if (user) {
+                        return done(null, user);
+                    } else {
+                        var newUser = new User();
+
+                        newUser.google.id    = profile.id;
+                        newUser.google.access_token = access_token;
+                        newUser.google.firstName  = profile.displayName;
+                        newUser.google.email = profile.emails[0].value;
+
+                        newUser.save(function(err) {
+                            if (err)
+                                throw err;
+
                             return done(null, newUser);
                         });
                     }
