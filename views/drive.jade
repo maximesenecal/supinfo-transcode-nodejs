@@ -1,13 +1,15 @@
 //
    Created by maximesenecal on 09/06/2016.
 
-//
-   Created by maximesenecal on 20/05/2016.
-
 extends layout
 
 block content
     br
+    if message
+        .container
+            .chip
+                | #{message}
+                i.material-icons close
     .container
         .section
             .row
@@ -15,7 +17,7 @@ block content
                     thead
                         tr
                             th(data-field='name') Nom des fichiers
-                            th(data-field='size') Taille
+                            th(data-field='size') Taille (en octets)
                             th(data-field='type') Type
                             th.center-align(data-field='actions') Actions
                     tbody
@@ -24,7 +26,7 @@ block content
                                 tr
                                     td #{file.filename}
                                     td #{file.size}
-                                    td #{file.encoding}
+                                    td #{file.mimetype}
                                     td.center-align
                                         if file.download
                                             a.btn.green.darken-1(href="#{file.path}", download="#{file.filename}")
@@ -38,9 +40,3 @@ block content
                                                         .circle
                                                     .circle-clipper.right
                                                         .circle
-                        else
-                            tr
-                                td Ex : game.of.thrones.s06e05.720p.hdtv.x264-avs
-                                td mkv
-                                td 1.10Go
-                                td Conversion en cours

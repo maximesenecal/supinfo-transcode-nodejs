@@ -17,7 +17,6 @@ module.exports = {
  'callbackURL' : 'http://localhost:3000/user/login/google/callback'
  }
 };
-
 /*
 //Online development database
 module.exports = {
@@ -33,5 +32,4 @@ module.exports = {
         'clientSecret' : 'o7F7W5tHRGJ-NEfMl9fnyDi2',
         'callbackURL' : 'http://localhost:3000/user/login/google/callback'
     }
-};
-*/
+};*/

@@ -4,16 +4,25 @@
 extends layout
 
 block content
+    br
     if message
-        | #{message}
+        .container
+            .chip
+                | #{message}
+                i.material-icons close
     .container
         .section
             .row
                 form(method="post",enctype="multipart/form-data",action="/transcoding")
                     p
-                        input(type="file",name="upl")
+                        .file-field.input-field.col.s8
+                            .btn
+                                span Sélectionner un média
+                                input(type='file', name="upl")
+                            .file-path-wrapper
+                                input.file-path.validate(type='text')
                     p
-                        .input-field.col.s12
+                        .input-field.col.s4
                             select(name="formatChoice")
                                 optgroup(label='Audio')
                                     option(value='mp3') mp3
@@ -23,4 +32,6 @@ block content
                                     option(value='divx') avi
                             label Choix du format de conversion
                     p
-                        input(type="submit")
+                        br
+                        .col.s12.center-align
+                            input.btn.blue.darken-1(type="submit")

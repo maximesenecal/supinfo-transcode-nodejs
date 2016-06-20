@@ -11,12 +11,11 @@ var User = require('../models/user');
 /*
  * Local authentification
  */
-//TODO: Faire le bouton deconnexion sur la vue
 router.get('/login', function (req, res) {
   res.render('login');
 });
 
-//TODO: Faire les messages flash côté vue
+//TODO: Envoyer les messages flash côté vue
 router.post('/login', passport.authenticate('local-login', {
   successRedirect : '/user/drive',
   failureRedirect : '/user/login',

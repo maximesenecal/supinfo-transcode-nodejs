@@ -58,9 +58,9 @@ module.exports = function(passport) {
     passport.use('local-login', new LocalStrategy({
             usernameField : 'email',
             passwordField : 'password',
-            passReqToCallback : true // allows us to pass back the entire request to the callback
+            passReqToCallback : true
         },
-        function(req, email, password, done) { // callback with email and password from our form
+        function(req, email, password, done) {
             User.findOne({ 'local.email' :  email }, function(err, user) {
                 if (err)
                     return done(err);

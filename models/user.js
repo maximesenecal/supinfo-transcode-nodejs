@@ -3,8 +3,7 @@
  */
 
 var mongoose = require('mongoose'),
-    bcrypt = require('bcrypt-nodejs'),
-    Schema = mongoose.Schema;
+    bcrypt = require('bcrypt-nodejs');
 
 var config = require('../config/config');
 
@@ -43,7 +42,7 @@ var userSchema = mongoose.Schema({
     files: [
         {
             originalname: String,
-            encoding: Number,
+            encoding: String,
             mimetype: String,
             destination: String,
             filename: String,

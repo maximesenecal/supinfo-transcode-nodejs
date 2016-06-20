@@ -4,7 +4,9 @@
 
 var express = require('express'),
     multer = require('multer'),
-    router = express.Router();
+    router = express.Router(),
+    mongoose = require('mongoose');
+
 /**
  * node-fluent-ffmpeg
  * https://github.com/fluent-ffmpeg/node-fluent-ffmpeg
@@ -14,6 +16,10 @@ var ffmpeg = require('fluent-ffmpeg');
 var isLoggedIn = require('../middlewares/auth');
 
 var User = require('../models/user');
+
+router.get('/', isLoggedIn, function(req, res, next) {
+    res.render('transcoding', {user: req.user});
+});
 
 //TODO: Faire la vérification avec multer sur le choix des formats de fichiers lors de l'upload
 var storage = multer.diskStorage({
@@ -29,34 +35,28 @@ router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), functio
     var file = req.file,
         currentIdUser = req.user.id;
 
-    /*User.findOne({ _id: currentIdUser }, function(err, user) {
-        if(err)
+    console.log(file);
+
+    User.findOne({ _id: currentIdUser }, function(err, user) {
+        if (err)
             console.log(err);
-
-        user.update(
-            { _id: currentIdUser },
-            { $push: {
-                files: file
-            } }
-        );
-
+        file.download = false;
+        user.files.push(file);
         user.save(function(err) {
-            console.log('Erreur de sauvegarde dans la base de donnée');
+            if (err)
+                console.log(err);
+            else
+                console.log("Fichier ajouté à la liste de l'utilisateur");
         });
+
     });
-    */
 
     if(req.file.mimetype == 'video/mp4' || req.file.mimetype == 'video/quicktime' || req.file.mimetype == 'video/avi')
         res.redirect('transcoding/video/' + req.file.originalname +'/'+ req.body.formatChoice);
     else if(req.file.mimetype == 'audio/mpeg' || req.file.mimetype == 'audio/mp3')
         res.redirect('transcoding/audio/' + req.file.originalname +'/'+ req.body.formatChoice);
     else
-        res.send('Format non pris en charge actuellement');
-});
-
-/* GET home page. */
-router.get('/', isLoggedIn, function(req, res, next) {
-    res.render('transcoding', {user: req.user});
+        res.render('transcoding', {message: 'Format non pris en charge...'});
 });
 
 /**
@@ -65,22 +65,38 @@ router.get('/', isLoggedIn, function(req, res, next) {
 router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
     var pathToMovieInput = 'uploads/input/' + req.params.filename;
     var pathToMovieOutput = 'uploads/output/' + req.params.filename;
-    var formatOutput = req.params.format;
-    
+    var formatOutput = req.params.format,
+        currentIdUser = req.user.id;
+
     var proc = ffmpeg(pathToMovieInput)
         .preset(formatOutput)
         .on('end', function() {
-            console.log('file has been converted successfully');
+            User.findOne({ _id: currentIdUser }, function(err, user) {
+                if (err)
+                    console.log(err);
+                // TODO : Optimiser en passant l'id via l'url
+                var idFile = user.files[user.files.length-1]._id;
+                var file = user.files.id(idFile);
+
+                file.download = true;
+
+                user.save(function(err) {
+                    if (err)
+                        console.log(err);
+                    else
+                        console.log("Fichier convertit et téléchargement prêt.");
+                });
+            });
         })
         .on('error', function(err) {
             console.log('an error happened: ' + err.message);
         })
         .on('progress', function(progress){
-            // TODO : Penser à utiliser cette progression dans la vue
-            console.log('Processing: ' + progress.percent + '% done');
+            // TODO : Utiliser cette progression dans la vue
+            console.log('Conversion en cours : ' + progress.percent + '% effectuée');
         })
         .save(pathToMovieOutput);
-    res.render('drive', { user: req.user, message: 'La conversion de votre fichier est en cours' });
+    res.render('drive', { user: req.user, message: 'La conversion de votre fichier est en cours.'});
 });
 
 /**
@@ -94,7 +110,21 @@ router.get('/audio/:filename', isLoggedIn, function(req, res) {
     var proc = ffmpeg(pathToFileInput)
         .preset(formatOutput)
         .on('end', function() {
-            console.log('file has been converted succesfully into mp3');
+            User.findOne({ _id: currentIdUser }, function(err, user) {
+                if (err)
+                    console.log(err);
+
+                var idFile = user.files[user.files.length-1]._id;
+                var file = user.files.id(idFile);
+                
+                file.download = true;
+                user.save(function(err) {
+                    if (err)
+                        console.log(err);
+                    else
+                        console.log("Fichier convertit et téléchargement prêt.");
+                });
+            });
         })
         .on('error', function(err) {
             console.log('an error happened: ' + err.message);
