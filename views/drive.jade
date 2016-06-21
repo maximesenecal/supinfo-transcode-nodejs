@@ -4,12 +4,12 @@
 extends layout
 
 block content
-    br
     if message
         .container
-            .chip
-                | #{message}
-                i.material-icons close
+            .row
+                .col.s12
+                    .card-panel.teal
+                        span.white-text #{message}
     .container
         .section
             .row
@@ -29,8 +29,11 @@ block content
                                     td #{file.mimetype}
                                     td.center-align
                                         if file.download
-                                            a.btn.green.darken-1(href="#{file.path}", download="#{file.filename}")
+                                            a.btn.green.darken-1(href="#{file.downloadUrl}", download="#{file.filename}")
                                                 | Télécharger
+                                        else if file.error
+                                            a.btn.red.darken-1(href="mailto:team@transcode.io")
+                                                | Avertir l'équipe
                                         else
                                             .preloader-wrapper.small.active
                                                 .spinner-layer.spinner-green-only

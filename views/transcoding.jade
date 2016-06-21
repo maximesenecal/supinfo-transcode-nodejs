@@ -4,12 +4,12 @@
 extends layout
 
 block content
-    br
     if message
         .container
-            .chip
-                | #{message}
-                i.material-icons close
+            .row
+                .col.s12
+                    .card-panel.amber.darken-1
+                        span.white-text #{message}
     .container
         .section
             .row

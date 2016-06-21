@@ -48,7 +48,9 @@ var userSchema = mongoose.Schema({
             filename: String,
             path: String,
             size: Number,
-            download: Boolean
+            download: Boolean,
+            downloadUrl: String,
+            error: Boolean
         }
     ]
 });
