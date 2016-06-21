@@ -4,26 +4,26 @@ nav.light-blue.lighten-1(role='navigation')
 		ul.right.hide-on-med-and-down
 			if user
 				li
-					a(href='/user/logout') Déconnexion
-				li
 					a(href='/transcoding') Convertir
 				li
 					a(href='/user/drive') Mon drive
 				li
 					a(href='/user') Mon profil
+				li
+					a(href='/user/logout') Déconnexion
 			else
 				li
 					a(href='/user/login') Connexion
 		ul#nav-mobile.side-nav
 			if user
 				li
-					a(href='/user/logout') Déconnexion
-				li
 					a(href='/transcoding') Convertir
 				li
 					a(href='/user/drive') Mon drive
 				li
 					a(href='/user') Mon profil
+				li
+					a(href='/user/logout') Déconnexion
 			else
 				li
 					a(href='/user/login') Connexion

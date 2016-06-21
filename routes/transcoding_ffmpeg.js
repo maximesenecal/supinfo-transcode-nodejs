@@ -22,7 +22,7 @@ router.get('/', isLoggedIn, function(req, res, next) {
         user: req.user});
 });
 
-//TODO: Faire la vérification avec multer sur le choix des formats de fichiers lors de l'upload
+// TODO: Faire la vérification avec multer sur le choix des formats de fichiers lors de l'upload
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/input')
@@ -37,6 +37,7 @@ router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), functio
         currentIdUser = req.user.id;
 
     console.log(file);
+
     if(req.file.mimetype == 'video/mp4' || req.file.mimetype == 'video/quicktime' || req.file.mimetype == 'video/avi') {
         User.findOne({_id: currentIdUser}, function (err, user) {
             if (err)
@@ -53,6 +54,7 @@ router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), functio
         });
         res.redirect('transcoding/video/' + req.file.originalname + '/' + req.body.formatChoice);
     }
+
     else if(req.file.mimetype == 'audio/mpeg' || req.file.mimetype == 'audio/mp3'){
         User.findOne({_id: currentIdUser}, function (err, user) {
             if (err)
@@ -72,15 +74,16 @@ router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), functio
     else
         res.render('transcoding', {
             user: req.user,
-            message: 'Format non pris en charge...'});
+            message: 'Format non prit en charge...'});
 });
 
 /**
  * Conversion d'un fichier video
  */
 router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
-    var pathToFileInput = 'uploads/input/' + req.params.filename,
-        pathToFileOutput = 'uploads/output/' + req.params.filename;
+    var pathToFileInput     = 'uploads/input/' + req.params.filename,
+        pathToFileOutput    = 'uploads/output/' + req.params.filename;
+
     var formatOutput = req.params.format,
         currentIdUser = req.user.id;
 
@@ -119,15 +122,16 @@ router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
     res.render('drive', {
         user: req.user,
         files: req.user.files,
-        message: 'La conversion de votre fichier est en cours.'});
+        message: 'La conversion de votre fichier est en cours. Vous allez recevoir un mail lorsque ce sera terminé.'});
 });
 
 /**
  * Conversion d'un fichier au format audio seulement
  */
 router.get('/audio/:filename/:format', isLoggedIn, function(req, res) {
-    var pathToFileInput = 'uploads/input/' + req.params.filename;
-    var pathToFileOutput = 'uploads/output/' + req.params.filename;
+    var pathToFileInput     = 'uploads/input/' + req.params.filename,
+        pathToFileOutput    = 'uploads/output/' + req.params.filename;
+
     var formatOutput = req.params.format,
         currentIdUser = req.user.id;
 
