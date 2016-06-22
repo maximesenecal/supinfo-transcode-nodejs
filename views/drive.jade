@@ -29,10 +29,10 @@ block content
                                     td #{file.mimetype}
                                     td.center-align
                                         if file.download
-                                            a.btn.green.darken-1(href="#{file.downloadUrl}", download="#{file.filename}")
+                                            a.btn.green.darken-1(href="#{file.downloadUrl}", download="#{file.filenameOutput}")
                                                 | Télécharger
                                         else if file.error
-                                            a.btn.red.darken-1(href="mailto:team@transcode.io")
+                                            a.btn.red.darken-1(href="mailto:service.transcodeio@gmail.com")
                                                 | Avertir l'équipe
                                         else
                                             .preloader-wrapper.small.active

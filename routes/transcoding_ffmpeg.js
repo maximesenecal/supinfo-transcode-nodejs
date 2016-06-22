@@ -88,9 +88,9 @@ router.post('/', isLoggedIn, multer({ storage: storage }).single('upl'), functio
  * Conversion d'un fichier video
  */
 router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
-    var pathToFileInput     = 'uploads/input/' + req.params.filename,
-        pathToFileOutput    = 'uploads/output/' + req.params.filename,
-        formatOutput = req.params.format;
+    var formatOutput = req.params.format,
+        pathToFileInput     = 'uploads/input/' + req.params.filename,
+        pathToFileOutput    = 'uploads/output/converted-'+req.params.filename;
 
     var currentIdUser = req.user.id;
     //Pas de vérification nécéssaire à partir d'une source vidéo.
@@ -108,6 +108,7 @@ router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
 
                 file.downloadUrl = '/'+pathToFileOutput;
                 file.download = true;
+                file.filenameOutput = 'converted-'+req.params.filename;
 
                 user.save(function(err) {
                     if (err)
@@ -137,10 +138,10 @@ router.get('/video/:filename/:format', isLoggedIn, function(req, res) {
  * Conversion d'un fichier au format audio seulement
  */
 router.get('/audio/:filename/:format', isLoggedIn, function(req, res) {
-    var pathToFileInput     = 'uploads/input/' + req.params.filename,
-        pathToFileOutput    = 'uploads/output/' + req.params.filename;
+    var formatOutput = req.params.format,
+        pathToFileInput     = 'uploads/input/' + req.params.filename,
+        pathToFileOutput    = 'uploads/output/converted-'+req.params.filename;
 
-    var formatOutput = req.params.format;
     var currentIdUser = req.user.id;
 
     //Vérification de la compatibilité de conversion avec un format audio en source
@@ -157,6 +158,7 @@ router.get('/audio/:filename/:format', isLoggedIn, function(req, res) {
 
                     file.downloadUrl = '/'+pathToFileOutput;
                     file.download = true;
+                    file.filenameOutput = 'converted-'+req.params.filename;
 
                     user.save(function(err) {
                         if (err)
